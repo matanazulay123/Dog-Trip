@@ -13,13 +13,8 @@ app.secret_key = 'my secret key'
 app.config['MYSQL_HOST'] = 'metro.proxy.rlwy.net'
 app.config['MYSQL_PORT'] = 12644
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_PASSWORD'] = 'itkkpNkZZrHzwoXrmfuobEQlbIUxSjw'
+app.config['MYSQL_PASSWORD'] = 'ittkkpKNZZrHzwoXrmfuobEQLbIUxSjw'  # בדיוק כמו שבראווה Raw Command
 app.config['MYSQL_DB'] = 'railway'
-
-
-
-
 
 
 # Mail server configuration
