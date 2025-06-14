@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Trip - Our Services</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+   <header>
+        <a href="{{ url_for('home') }}" class="logo"><span><img src="{{ url_for('static', filename='images/logo.png') }}"></span></a>
+        <ul class="navbar">
+            <li><a href="{{ url_for('home') }}" class="active">Home</a></li>
+            <li><a href="{{ url_for('services') }}">Services</a></li>
+            <li><a href="{{ url_for('aboutus') }}">About Us</a></li>
+            <li><a href="{{ url_for('register') }}">Become a Dog Walker</a></li>
+        </ul>
+        <div class="main">
+            <a href="{{ url_for('login') }}" class="user"><i class="fa-solid fa-user"></i>Log In</a>
+            <a href="{{ url_for('register') }}">Sign up</a>
+        </div>
+    </header>
+
+
+    <div class="services-header">
+        <h1>Professional Dog Walking & Dog Sitting Services You Can Trust</h1>
+        <p>Dog Trip is your one-stop solution for reliable and loving dog care.
+            We connect you with experienced walkers and sitters who are passionate about providing the best care for your furry friend.</p>
+    </div>
+
+    <div class="services-container">
+        <div class="services-intro">
+            <h2>Our Services</h2>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card2">
+                <div class="card-title">DOG WALKER</div>
+                <h3>Tail Wagging Walks for Happy Dogs</h3>
+                <p>We offer personalized dog walks tailored to your dog's needs. Our walkers are friendly, responsible, and provide safe and engaging walks.</p>
+                <h4>Benefits</h4>
+                <ul>
+                    <li><strong>Exercise:</strong> Keeps your dog fit and healthy.</li>
+                    <li><strong>Socialization:</strong>  Fosters positive interactions with other dogs.</li>
+                    <li><strong>Reduced Boredom:</strong> Prevents destructive behavior.</li>
+                </ul>
+                <a href="{{ url_for('register') }}" class="btn2">BOOK NOW</a>
+            </div>
+            <div class="service-card2">
+                <div class="card-title">DOG SITTING</div>
+                <h3>Spoil Your Pup with Loving In-Home Care</h3>
+                <p>Enjoy peace of mind knowing your dog is in safe hands while you're away. Our sitters provide loving care in your dog's familiar environment.</p>
+                <h4>Benefits</h4>
+                <ul>
+                    <li><strong>Comfort:</strong> Your dog stays in a familiar setting.</li>
+                    <li><strong>Familiarity:</strong> No disruption to your dog's routine.</li>
+                    <li><strong>Reduced Stress:</strong> Less anxiety from being in a new place.</li>
+                </ul>
+                <a href="{{ url_for('register') }}" class="btn2">BOOK NOW</a>
+            </div>
+        </div>
+
+
+        <div class="cta-and-visual-container">
+            <div class="visual-content">
+                <img src="/static/images/dogblackandwhite.jpeg" alt="Dog black and white">
+            </div>
+            <div class="cta-section">
+                <h2>Ready to Book ?<i class="fa-solid fa-magnifying-glass-location"></i></h2>
+                <a href="{{ url_for('register') }}" class="btn">Find a Dog Walker Near You!</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="sec logo">
+                <img src="/static/images/logo.png">
+                <ul class="sci">
+                    <li><a href="https://www.facebook.com/"><i class="fa-brands fa-facebook-f"></i></a></li>
+                    <li><a href="https://www.instagram.com/"><i class="fa-brands fa-instagram"></i></a></li>
+                    <li><a href="https://www.youtube.com/"><i class="fa-brands fa-youtube"></i></a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>Services</h2>
+                <ul>
+                    <li><a href="{{ url_for('services') }}">Dog walking</a></li>
+                    <li><a href="{{ url_for('services') }}">Dog Sitting</a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>About</h2>
+                <ul>
+                    <li><a href="{{ url_for('aboutus') }}">About Us</a></li>
+                    <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>Apply</h2>
+                <ul>
+                    <li><a href="{{ url_for('register') }}">Become a Dog Walker</a></li>
+                </ul>
+            </div>
+            <div class="sec contact">
+                <h2>Contact Us</h2>
+                <ul class="info">
+                    <li><span><i class="fa-solid fa-phone"></i></span><a href="tel:0503737146">050-3737146</a></li>
+                    <li><span><i class="fa-solid fa-envelope"></i></span><a href="mailto:MatanAzulay123@Gmail.com">MatanAzulay123@Gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <div class="copyrightText">
+        <p>2024 Dog Trip Inc. All rights reserved</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Dog Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .main a:hover{ color:red;  }
+
+         body {
+            background-image: url(/static/images/dog321.jpeg);
+        }
+        h1 {
+            color : white;
+            text-align: center;
+            margin-top: 7rem;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 6px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+
+        h2 {
+           background: linear-gradient(to right, #2F4F4F,#b0e0e6 );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+
+
+        input[type="file"] {
+            display: none;
+        }
+
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+
+        .user-type-option {
+            display: inline-block;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #fff;
+            color: #000;
+            width: 32%;
+            font-size: 0.9em;
+            margin-bottom: 20px; /* ריווח נוסף למראה מסודר */
+        }
+
+        .user-type-option input[type="radio"] {
+            display: none;
+        }
+
+        .user-type-option.active {
+            border: 4px solid #20B2AA;
+        }
+
+
+    </style>
+</head>
+<body>
+     <header>
+        <a href="{{ url_for('dashboard_do') }}" class="logo"><span><img src="{{ url_for('static', filename='images/logo.png') }}"></span></a>
+        <ul class="navbar">
+            <li><a href="{{ url_for('searching_do') }}" class="active">Search</a></li>
+            <li><a href="{{ url_for('dashboard_do') }}">Profile</a></li>
+            <li><a href="{{ url_for('dog_profile') }}">Your dog</a></li>
+            <li><a href="{{ url_for('location_do') }}">Location</a></li>
+            <li><a href="{{ url_for('notifications') }}">notifications</a></li>
+        </ul>
+        <div class="main">
+            <a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Log out</a>
+        </div>
+    </header>
+
+        <h1>Edit Dog Profile</h1>
+        <form id="profileForm" action="{{ url_for('update_dog_profile') }}" method="post" enctype="multipart/form-data">
+
+            <div class="profile-section">
+                <h2>Dog Image</h2>
+                <div class="profile-pic-container">
+                <img class="profile-pic" id="current-dog-pic" src="{{ url_for('static', filename=dog['dog_picture'] if dog['dog_picture'] else 'images/default_dog.jpg') }}">
+                    <div class="profile-pic-overlay">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <input type="file" name="dog_pic" id="dog_pic" accept="image/*" style="display: none;">
+                <div class="btn-container">
+                    <button type="button" class="btn" onclick="document.getElementById('dog_pic').click()">Choose Dog Picture</button>
+                </div>
+            </div>
+
+
+
+            <div class="profile-section">
+                <h2>Dog Name</h2>
+                <input type="text" name="dog_name" id="dog_name" placeholder="Enter dog's name" value="{{ dog['dog_name'] }}">
+            </div>
+
+            <div class="profile-section">
+                <h2>Breed</h2>
+                <input type="text" name="dog_breed" id="dog_breed" placeholder="Enter dog's breed" value="{{ dog['breed'] }}">
+            </div>
+
+            <div class="profile-section">
+                <h2>Age</h2>
+                <input type="text" name="dog_age" id="dog_age" placeholder="Enter dog's age" value="{{ dog['age'] }}">
+            </div>
+
+           <div class="profile-section">
+    <h2>Choose Dog Size</h2>
+    <div class="user-type-container">
+        <div class="user-type-option {% if dog['size'] == 'small' %}active{% endif %}" data-value="small">
+            <input type="radio" id="size-small" name="dog_size" value="small">
+
+            <label for="size-small">Small</label>
+        </div>
+        <div class="user-type-option {% if dog['size'] == 'medium' %}active{% endif %}" data-value="medium">
+            <input type="radio" id="size-medium" name="dog_size" value="medium">
+
+            <label for="size-medium">Medium</label>
+        </div>
+        <div class="user-type-option {% if dog['size'] == 'large' %}active{% endif %}" data-value="large">
+            <input type="radio" id="size-large" name="dog_size" value="large">
+
+            <label for="size-large">Large</label>
+        </div>
+    </div>
+</div>
+
+
+            <div class="profile-section">
+                <h2>Special Requests</h2>
+                <textarea name="special_requests" id="special_requests" placeholder="Enter any special requests" rows="6">{{ dog['special_requests'] }}</textarea>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="btn">Update Dog Profile</button>
+            </div>
+        </form>
+
+<script>
+const sizeOptions = document.querySelectorAll('.user-type-option');
+
+// הוספת אירוע לחיצה לכל אחת מהאפשרויות
+sizeOptions.forEach(option => {
+    option.addEventListener('click', (e) => {
+        e.preventDefault(); // מניעת פעולות ברירת מחדל כמו סימון מחדש
+
+        // שינוי מצב ה-radio על הכפתור שנלחץ
+        const radio = option.querySelector('input[type="radio"]');
+        radio.checked = true;
+
+        // הסרת מחלקת 'active' מכל האפשרויות
+        sizeOptions.forEach(opt => opt.classList.remove('active'));
+
+        // הוספת מחלקת 'active' לאפשרות הנוכחית שנבחרה
+        option.classList.add('active');
+    });
+});
+
+</script>
+</body>
+</html>

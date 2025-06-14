@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search for Dog Walkers</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        .main a:hover { color: red; }
+
+        body {
+            background-image: url(/static/images/search.jpeg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .dog-walker-card {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .dog-walker-card button {
+            background-color: #000;
+            color: #fff; /* White text */
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 8px; /* Rounded corners */
+            transition: background-color 0.3s ease; /* Smooth transition on hover */
+        }
+
+        .dog-walker-card button:hover {  background-color: #333;  }
+
+        .dog-walker-card button i { padding: 6px; }
+
+        .dog-walker-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-right: 40px;
+        }
+        .dog-walker-details {
+            flex-grow: 1;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 15px;
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+
+        h2 {  background-image: linear-gradient(to right, #4A88D9, #414345);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+
+
+        h3 {
+            background-image: linear-gradient(to right, #49a09d, #7474BF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        h1 {
+          font-family: 'Roboto', sans-serif;
+          font-size: 4rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          color: white;
+          text-align: center;
+          margin: 0;
+          background: linear-gradient(to right, #4CB8C4, #1FA2FF, #3CD3AD, #3f51b5); /* Gradient background */
+        }
+
+        p {  margin: 7px 0;  }
+
+        #modalBookNow {
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        #modalBookNow:hover {
+            background-color: #45a049;
+        }
+
+        #modalBookNow:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .book-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .book-button:hover {  background-color: #45a049;  }
+        .calendar-day.selected {
+        background-color: green;
+        color: white;
+        }
+    </style>
+</head>
+<body data-page="searching_do">
+
+
+<header>
+    <a href="{{ url_for('dashboard_do') }}" class="logo"><span><img src="{{ url_for('static', filename='images/logo.png') }}"></span></a>
+    <ul class="navbar">
+        <li><a href="{{ url_for('searching_do') }}" class="active">Search</a></li>
+        <li><a href="{{ url_for('dashboard_do') }}">Profile</a></li>
+        <li><a href="{{ url_for('dog_profile') }}">Your dog</a></li>
+        <li><a href="{{ url_for('location_do') }}">Location</a></li>
+        <li><a href="{{ url_for('notifications') }}">notifications</a></li>
+    </ul>
+    <div class="main">
+        <a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Log out</a>
+    </div>
+</header>
+
+
+    <h1>Search for Dog Walkers</h1>
+<div class="dog-walker-list">
+        {% for walker in dog_walkers %}
+  <div class="dog-walker-card">
+    <img src="{{ url_for('static', filename=walker.profile_picture) }}" alt="{{ walker.first_name }} {{ walker.last_name }}">
+
+    <div class="dog-walker-details">
+        <h2>{{ walker.first_name }} {{ walker.last_name }}</h2>
+        <p><strong>Rating:</strong> {{ "%.1f"|format(walker.average_rating) }} <i class="fas fa-star" style="color:gold;"></i> ({{ walker.review_count }} reviews)</p>
+        <p><strong>Distance:</strong> {{ "%.2f"|format(walker.distance) }} km</p>
+        <p><strong>Services:</strong> {{ walker.services }}</p>
+        <p><strong>Price Range:</strong> {{ walker.price_range }}</p>
+        <button onclick="showDetails({{ walker.user_id }})">View Details<i class="fa-solid fa-circle-info"></i></button>
+    </div>
+  </div>
+        {% endfor %}
+</div>
+
+<div id="walkerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <img id="modalImage" src="" alt="Walker profile picture">
+                <h2 id="modalName"></h2>
+            </div>
+            <h3>About</h3>
+            <p id="modalBio"></p>
+            <h3>Services</h3>
+            <p id="modalServices"></p>
+            <h3>Pricing</h3>
+            <p id="modalWalkingPrice"></p>
+            <p id="modalSittingPrice"></p>
+            <h3>Reviews</h3>
+            <div id="modalReviews"></div>
+                <h3>Availability</h3>
+        <div id="calendar-container">
+            <div id="calendar-controls">
+                <button id="prev-month">Previous Month</button>
+                <span id="current-month-year"></span>
+                <button id="next-month">Next Month</button>
+            </div>
+            <div id="calendar"></div>
+        </div>
+        <button id="modalBookNow" class="book-button">Book Now</button>
+    </div>
+</div>
+
+
+<script>
+    const modal = document.getElementById('walkerModal');
+    const closeBtn = document.querySelector('.close');
+    const bookNowButton = document.getElementById('modalBookNow');
+    let currentWalkerId = null;
+    let selectedDate = null;
+    let currentDate = new Date();
+    let selectedYear = currentDate.getFullYear();
+    let selectedMonth = currentDate.getMonth();
+
+    function showDetails(walkerId) {
+        // פותח את ה-Modal כשמשתמש לוחץ על ווקר
+        currentWalkerId = walkerId;
+        selectedDate = null;
+        bookNowButton.style.display = 'none';
+        selectedYear = currentDate.getFullYear();
+        selectedMonth = currentDate.getMonth();
+
+        fetch(`/get_walker_details/${walkerId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('modalName').textContent = `${data.first_name} ${data.last_name}`;
+                document.getElementById('modalImage').src = `/static/${data.profile_picture}`;
+                document.getElementById('modalBio').textContent = data.bio || 'No bio available';
+                document.getElementById('modalServices').textContent = data.services;
+                document.getElementById('modalWalkingPrice').textContent = data.walking_price
+                    ? `Walking: $${data.walking_price}`
+                    : 'Walking: Not offered';
+                document.getElementById('modalSittingPrice').textContent = data.sitting_price
+                    ? `Sitting: $${data.sitting_price}`
+                    : 'Sitting: Not offered';
+                document.getElementById('modalBookNow').style.display = 'none';
+
+                renderCalendar(selectedYear, selectedMonth);
+                updateReviewsSection(data.reviews);
+                modal.style.display = 'block';
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    closeBtn.onclick = () => { modal.style.display = 'none'; };
+    window.onclick = event => { if (event.target == modal) modal.style.display = 'none'; };
+
+    document.getElementById('modalBookNow').addEventListener('click', function() {
+        if (!selectedDate) {
+            alert('Please select a valid date');
+            return;
+        }
+
+        // מניעת double-click
+        const bookNowButton = document.getElementById('modalBookNow');
+        bookNowButton.disabled = true;
+
+        fetch(`/book_walker/${currentWalkerId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ date: selectedDate })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Booking Response:", data);
+            if (data.success) {
+                alert(data.message);
+                modal.style.display = 'none';
+                window.location.href = `/notifications?selected_date=${selectedDate}`;
+            } else {
+                bookNowButton.disabled = false;
+                alert(data.message || 'Booking failed. Please try again.');
+            }
+        })
+        .catch(error => {
+            bookNowButton.disabled = false;
+            alert(error.message || 'An error occurred. Please try again.');
+        });
+    });
+
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December"];
+
+    function renderCalendar(year, month) {
+        const calendar = document.getElementById('calendar');
+        const currentMonthYear = document.getElementById('current-month-year');
+        calendar.innerHTML = '';
+        currentMonthYear.textContent = `${monthNames[month]} ${year}`;
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        for (let i = 0; i < firstDay; i++) {
+            calendar.appendChild(document.createElement('div'));
+        }
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayElement = document.createElement('div');
+            dayElement.classList.add('calendar-day');
+            dayElement.textContent = day;
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            dayElement.dataset.date = dateStr;
+            // בכוונה לא מוסיפים "click" כברירת מחדל – רק אם זמין ב-loadAvailability
+            calendar.appendChild(dayElement);
+        }
+
+        loadAvailability(year, month);
+    }
+
+    function selectDate(dayElement) {
+        // הסרת בחירה קודמת
+        document.querySelectorAll('.calendar-day.selected').forEach(day => {
+            day.classList.remove('selected');
+        });
+        dayElement.classList.add('selected');
+        selectedDate = dayElement.dataset.date;
+        // הצגת הכפתור "Book Now"
+        const bookNowButton = document.getElementById('modalBookNow');
+        bookNowButton.style.display = 'block';
+        bookNowButton.disabled = false;
+    }
+
+    function loadAvailability(year, month) {
+        // שולף רק תאריכים is_available=1
+        fetch(`/get_availability/${year}/${month + 1}?walker_id=${currentWalkerId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && typeof data === 'object') {
+                    Object.entries(data).forEach(([date, type]) => {
+                        const dayElement = document.querySelector(`[data-date="${date}"]`);
+                        if (dayElement) {
+                            // הוספת מחלקה "sitting" או "walking"
+                            dayElement.classList.add(type);
+
+                            // אם זה זמין (sitting/walking) => נעשה אותו בקליק
+                            if (!dayElement.classList.contains('clickable')) {
+                                dayElement.addEventListener('click', () => {
+                                    selectDate(dayElement);
+                                });
+                                dayElement.classList.add('clickable');
+                            }
+                        }
+                    });
+                }
+            })
+            .catch(error => console.error('Error loading availability:', error));
+    }
+
+    document.getElementById('prev-month').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+    });
+
+    document.getElementById('next-month').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+    });
+
+    function updateReviewsSection(reviews) {
+        const reviewsContainer = document.getElementById('modalReviews');
+        reviewsContainer.innerHTML = '';
+
+        if (reviews && reviews.length > 0) {
+            reviews.forEach(review => {
+                const reviewElement = document.createElement('div');
+                reviewElement.className = 'review-item';
+                reviewElement.innerHTML = `
+                    <div>
+                        <strong>${review.reviewer_name}</strong> (${review.created_at})
+                    </div>
+                    <div>${generateStars(review.rating)}</div>
+                    <p>${review.comment || 'No comment provided'}</p>
+                `;
+                reviewsContainer.appendChild(reviewElement);
+            });
+        } else {
+            reviewsContainer.innerHTML = '<p>No reviews yet.</p>';
+        }
+    }
+
+    function generateStars(rating) {
+        const fullStar = '<i class="fas fa-star" style="color: gold;"></i>';
+        const halfStar = '<i class="fas fa-star-half-alt" style="color: gold;"></i>';
+        const emptyStar = '<i class="far fa-star" style="color: gold;"></i>';
+        let stars = '';
+
+        for (let i = 0; i < Math.floor(rating); i++) {
+            stars += fullStar;
+        }
+        if (rating % 1 >= 0.5) {
+            stars += halfStar;
+        }
+        for (let i = Math.ceil(rating); i < 5; i++) {
+            stars += emptyStar;
+        }
+        return stars;
+    }
+
+    // סגירת המודל בלחיצה על X או מחוץ למודל
+    closeBtn.onclick = () => { modal.style.display = 'none'; };
+    window.onclick = event => { if (event.target == modal) modal.style.display = 'none'; };
+</script>
+
+</body>
+</html>

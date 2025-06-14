@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+instance/
+.env.*
+*.sqlite3
+*.db
+project_structure.txt

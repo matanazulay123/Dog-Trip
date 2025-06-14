@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Location dog owner</title>
+    <style>
+        .main a:hover { color: red; }
+        body {
+            background-image: url(/static/images/search2.jpeg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+
+        #input-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        #city-input, #street-input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        #search-button {
+            background-color: #0000CD;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        #search-button:hover {
+            background-color: #191970;
+        }
+        #map {
+            height: 525px;
+            width: 80%;
+            max-width: 1520px;
+            margin-bottom: 20px;
+        }
+        #continue-button {
+            background-color: #0000CD;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #continue-button:hover {
+            background-color: #191970;
+        }
+
+    </style>
+</head>
+<body>
+<header>
+    <a href="{{ url_for('dashboard_do') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a>
+    <ul class="navbar">
+        <li><a href="{{ url_for('searching_do') }}" class="active">Search</a></li>
+        <li><a href="{{ url_for('dashboard_do') }}">Profile</a></li>
+        <li><a href="{{ url_for('dog_profile') }}">Your dog</a></li>
+        <li><a href="{{ url_for('location_do') }}">Location</a></li>
+        <li><a href="{{ url_for('notifications') }}">notifications</a></li>
+    </ul>
+    <div class="main">
+        <a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Log out</a>
+    </div>
+</header>
+
+    <div id="input-container">
+        <input type="text" id="city-input" placeholder="City">
+        <input type="text" id="street-input" placeholder="Street & House number">
+        <button id="search-button">Search</button>
+    </div>
+    <div id="map"></div>
+    <button id="continue-button">Save Change</button>
+
+    <script>
+        var map = L.map('map').setView([31.0461, 34.8516], 8);  // Center of Israel
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        var marker;
+
+        document.getElementById('search-button').addEventListener('click', function() {
+            var city = document.getElementById('city-input').value;
+            var street = document.getElementById('street-input').value;
+            var address = street + ', ' + city + ', Israel';
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        var lat = parseFloat(data[0].lat);
+                        var lon = parseFloat(data[0].lon);
+
+                        if (marker) {
+                            map.removeLayer(marker);
+                        }
+
+                        marker = L.marker([lat, lon]).addTo(map);
+                        map.setView([lat, lon], 15);
+                        marker.bindPopup("The location").openPopup();
+                    } else {
+                        alert('Location not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred');
+                });
+        });
+
+
+       document.getElementById("continue-button").addEventListener("click", function() {
+            if (!marker) {
+                alert('Please select a location first');
+                return;
+            }
+            var latlng = marker.getLatLng();
+            var locationData = {
+                latitude: latlng.lat,
+                longitude: latlng.lng,
+                location_name: document.getElementById('city-input').value + ', ' + document.getElementById('street-input').value
+            };
+            fetch('/location_do', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(locationData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirect) {
+                alert('Location saved successfully!');
+                    window.location.href = data.redirect;
+                } else if (data.error) {
+                    alert(data.error);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred while saving the location');
+            });
+        });
+    </script>
+
+</body>
+</html>

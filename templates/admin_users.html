@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dog Trip - User Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .block-btn {
+            background-color: #d35400;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Management</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>User Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.last_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{% if user.user_type == 'dog_owner' %}
+                        Owner
+                    {% elif user.user_type == 'dog_walker' %}
+                        Walker
+                    {% else %}
+                        {{ user.user_type }}
+                    {% endif %}</td>
+                <td>
+                    <button class="block-btn" onclick="blockUser('{{ user.email }}', '{{ user.user_id }}')">Block</button>
+                    <button class="delete-btn" onclick="deleteUser('{{ user.user_id }}')">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function deleteUser(userId) {
+            console.log('Deleting user:', userId);
+
+            fetch(`/admin/delete_user/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('User deleted successfully');
+                    location.reload();
+                } else {
+                    alert('Error deleting user: ' + (data.message || 'error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error deleting user. Please try again.');
+            });
+        }
+
+        function blockUser(email, userId) {
+            console.log('Blocking user:', { email, userId });
+
+            // Validate input
+            if (!email || !userId) {
+                console.error('Missing required data:', { email, userId });
+                alert('Missing required data');
+                return;
+            }
+
+            const data = {
+                email: email,
+                user_id: parseInt(userId)  // Convert to number
+            };
+
+            fetch('/admin/block_user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('User blocked successfully');
+                    location.reload();
+                } else {
+                    alert('Error blocking user: ' + (data.message || 'error'));
+                }
+            })
+            .catch(error => {
+                alert('Error blocking user. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>

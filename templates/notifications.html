@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        .main a:hover { color: red; }
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            margin: 2rem auto;
+            letter-spacing: -0.5px;
+            position: relative;
+            padding: 1rem;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #2c3e50, #3498db);
+            border-radius: 2px;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: separate;
+            border-spacing: 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #2c3e50;
+            color: white;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        tr {
+            background-color: #fff;
+            transition: background-color 0.3s;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+        .btn-accept, .btn-reject, .btn-payment {
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-accept {
+            background-color: #27ae60;
+            color: white;
+        }
+        .btn-accept:hover {
+            background-color: #2ecc71;
+        }
+        .btn-reject {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-reject:hover {
+            background-color: #c0392b;
+        }
+        .btn-payment {
+            background-color: #2980b9;
+            color: white;
+        }
+        .btn-payment:hover {
+            background-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+{% if user_type == 'dog_owner' %}
+<header>
+    <a href="{{ url_for('dashboard_do') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a>
+    <ul class="navbar">
+        <li><a href="{{ url_for('searching_do') }}">Search</a></li>
+        <li><a href="{{ url_for('dashboard_do') }}">Profile</a></li>
+        <li><a href="{{ url_for('dog_profile') }}">Your dog</a></li>
+        <li><a href="{{ url_for('location_do') }}">Location</a></li>
+        <li><a href="{{ url_for('notifications') }}" class="active">Notifications</a></li>
+    </ul>
+    <div class="main">
+        <a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Log out</a>
+    </div>
+</header>
+{% elif user_type == 'dog_walker' %}
+<header>
+    <a href="{{ url_for('dashboard_dw') }}" class="logo"><span><img src="{{ url_for('static', filename='images/logo.png') }}"></span></a>
+    <ul class="navbar">
+        <li><a href="{{ url_for('dashboard_dw') }}">Profile</a></li>
+        <li><a href="{{ url_for('details_dw') }}">Services</a></li>
+        <li><a href="{{ url_for('location_dw') }}">Location</a></li>
+        <li><a href="{{ url_for('notifications') }}" class="active">Notifications</a></li>
+    </ul>
+    <div class="main">
+        <a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Log out</a>
+    </div>
+</header>
+{% endif %}
+
+<h1 class="page-title">Notifications</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul style="max-width:600px; margin: 0 auto; padding:0; list-style:none;">
+      {% for category, message in messages %}
+      <li style="background:#eee; margin:5px 0; padding:8px;">
+        <strong>{{ category|capitalize }}:</strong> {{ message }}
+      </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+{% if user_type == 'dog_walker' %}
+    {% if bookings %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Owner Name</th>
+                    <th>Dog Name</th>
+                    <th>Breed</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for b in bookings %}
+                <tr>
+                    <td>{{ b.owner_firstname }} {{ b.owner_lastname }}</td>
+                    <td>{{ b.dog_name }}</td>
+                    <td>{{ b.breed }}</td>
+                    <td>{{ b.booking_date }}</td>
+                    <td>{{ b.status }}</td>
+                    <td>
+                        {% if b.status == 'pending' %}
+                        <form action="{{ url_for('accept_booking', booking_id=b.booking_id) }}" method="POST" style="display:inline;">
+                            <button class="btn-accept" type="submit">Accept</button>
+                        </form>
+                        <form action="{{ url_for('reject_booking', booking_id=b.booking_id) }}" method="POST" style="display:inline;">
+                            <button class="btn-reject" type="submit">Reject</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align:center;">No pending bookings found.</p>
+    {% endif %}
+
+{% elif user_type == 'dog_owner' %}
+    {% if bookings %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Walker Name</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for b in bookings %}
+                <tr>
+                    <td>
+                        {% if b.walker_id %}
+                            {{ b.walker_firstname }} {{ b.walker_lastname }}
+                        {% else %}
+                            No walker assigned yet
+                        {% endif %}
+                    </td>
+                    <td>{{ b.booking_date }}</td>
+                    <td>{{ b.status }}</td>
+                    <td>
+                      {% if b.status == 'accepted' and b.walker_id %}
+                         <form action="{{ url_for('payment', walker_id=b.walker_id) }}"
+                             method="get" style="display:inline;">
+                          <input type="hidden" name="booking_date" value="{{ b.booking_date }}">
+                          <button class="btn-payment" type="submit">Continue to Payment</button>
+                        </form>
+                      {% elif b.status == 'completed' %}
+                        <span style="color: green;">Order Completed</span>
+                      {% elif b.status == 'cancelled' %}
+                        <span style="color: red;">Order Cancelled</span>
+                      {% else %}
+                        <span>{{ b.status }}</span>
+                      {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align:center;">No bookings found.</p>
+    {% endif %}
+{% else %}
+    <p style="text-align:center;">Unknown user type.</p>
+{% endif %}
+
+</body>
+</html>

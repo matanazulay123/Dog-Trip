@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rating Page</title>
+   <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .profile img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile h2 {
+            font-size: 1.8rem;
+            margin: 0;
+            color: #fff;
+        }
+
+        .rating {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .star {
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: #ccc;
+            transition: transform 0.2s, color 0.3s;
+        }
+
+        .star.active {
+            color: gold;
+            transform: scale(1.2);
+        }
+
+        #comment {
+            width: 100%;
+            max-width: 400px;
+            height: 100px;
+            margin: 20px 0;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            resize: none;
+            font-size: 1rem;
+        }
+
+        #comment::placeholder {
+            color: #ccc;
+        }
+
+        button {
+            background: #2575fc;
+            border: none;
+            color: #fff;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background: #6a11cb;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .profile {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile img {
+                margin-bottom: 10px;
+            }
+
+            #comment {
+                font-size: 0.9rem;
+            }
+
+            button {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endwith %}
+    <h1>Rate Your Experience For</h1>
+
+     <div class="profile">
+        <img src="{{ url_for('static', filename=walker.profile_picture) }}" alt="{{ walker.first_name }} {{ walker.last_name }}">
+    <div>
+        <h2>{{ walker['first_name'] }} {{ walker['last_name'] }}</h2>
+    </div>
+</div>
+
+    <div class="rating" id="rating"></div>
+
+    <textarea id="comment" placeholder="Leave your comment here"></textarea>
+
+    <form id="ratingForm" action="{{ url_for('rate_walker', walker_id=walker_id) }}" method="post">
+        <input type="hidden" name="rating" id="ratingValue">
+        <input type="hidden" name="comment" id="commentValue">
+
+        <input type="hidden" name="booking_id" value="{{ booking_id }}">
+        <input type="hidden" name="selected_date" value="{{ selectedDate }}">
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+    // המיכל לכוכבים
+        const ratingContainer = document.getElementById('rating');
+        // שדה קלט לאחסון הדירוג
+        const ratingInput = document.getElementById('ratingValue');
+        // שדה קלט לאחסון התגובה
+        const commentInput = document.getElementById('commentValue');
+        // אזור טקסט לכתיבת תגובה
+       const commentTextarea = document.getElementById('comment');
+
+
+
+        for (let i = 1; i <= 5; i++) {
+            const star = document.createElement('span');
+            star.classList.add('star');
+            star.textContent = '★';
+            star.dataset.value = i;
+            ratingContainer.appendChild(star);
+
+             star.addEventListener('click', () => {
+                ratingInput.value = star.dataset.value;
+                highlightStars(star.dataset.value);
+            });
+
+              star.addEventListener('mouseover', () => {
+                 highlightStars(star.dataset.value);
+
+            });
+
+             star.addEventListener('mouseout', () => {
+                highlightStars(ratingInput.value);
+            });
+
+        }
+
+        function highlightStars(rating) {
+            const stars = document.querySelectorAll('.star');
+            stars.forEach(star => {
+                star.classList.toggle('active', star.dataset.value <= rating);
+            });
+
+        }
+
+        document.getElementById('ratingForm').addEventListener('submit', function(event) {
+            commentInput.value = commentTextarea.value;
+
+        });
+
+    </script>
+
+</body>
+</html>

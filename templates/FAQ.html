@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern FAQ Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('home') }}" class="logo"><span><img src="{{ url_for('static', filename='images/logo.png') }}"></span></a>
+        <ul class="navbar">
+            <li><a href="{{ url_for('home') }}" class="active">Home</a></li>
+            <li><a href="{{ url_for('services') }}">Services</a></li>
+            <li><a href="{{ url_for('aboutus') }}">About Us</a></li>
+            <li><a href="{{ url_for('register') }}">Become a Dog Walker</a></li>
+        </ul>
+        <div class="main">
+            <a href="{{ url_for('login') }}" class="user"><i class="fa-solid fa-user"></i>Log In</a>
+            <a href="{{ url_for('register') }}">Sign up</a>
+        </div>
+    </header>
+
+   <div class="container2">
+    <h1>Frequently Asked Questions</h1>
+    <div class="faq-container">
+        <div class="faq-item">
+            <div class="faq-question">
+                <h2>How do I apply?</h2>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>To apply as a dog walker, click on the "Become a Dog Walker" link in the navigation menu. Fill out the application form with your details. Our team will review your application and get back to you.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                <h2>I forgot my password. What should I do?</h2>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>If you've forgotten your password, click on the "Log In" button and then select "Forgot Password." Enter the email address associated with your account, and we'll send you instructions to reset your password. If you don't receive the email, please check your spam folder or contact our support team.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                <h2>How do I know that dog walkers are reliable?</h2>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>We take the reliability of our dog walkers very seriously. All our dog walkers undergo a thorough background check and vetting process. Additionally, we have a rating system where you can see reviews from other pet owners. We also offer a satisfaction guarantee and 24/7 support to ensure the best experience for you and your furry friend.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                <h2>What services do you offer?</h2>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>We offer a range of pet care services to meet your needs:
+                    <ul>
+                        <li>Dog Walking: Scheduled walks tailored to your dog's energy level and preferences.</li>
+                        <li>Dog Sitting: In-home pet sitting for when you're away.</li>
+                    </ul>
+                    All our services are customizable to fit your pet's specific needs and your schedule.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <footer>
+        <div class="container">
+            <div class="sec logo">
+                <img src="/static/images/logo.png">
+                <ul class="sci">
+                    <li><a href="https://www.facebook.com/"><i class="fa-brands fa-facebook-f"></i></a></li>
+                    <li><a href="https://www.instagram.com/"><i class="fa-brands fa-instagram"></i></a></li>
+                    <li><a href="https://www.youtube.com/"><i class="fa-brands fa-youtube"></i></a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>Services</h2>
+                <ul>
+                    <li><a href="{{ url_for('services') }}">Dog walking</a></li>
+                    <li><a href="{{ url_for('services') }}">Dog Sitting</a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>About</h2>
+                <ul>
+                    <li><a href="{{ url_for('aboutus') }}">About Us</a></li>
+                    <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>Apply</h2>
+                <ul>
+                    <li><a href="{{ url_for('register') }}">Become a Dog Walker</a></li>
+                </ul>
+            </div>
+            <div class="sec contact">
+                <h2>Contact Us</h2>
+                <ul class="info">
+                    <li><span><i class="fa-solid fa-phone"></i></span><a href="tel:0503737146">050-3737146</a></li>
+                    <li><span><i class="fa-solid fa-envelope"></i></span><a href="mailto:MatanAzulay123@Gmail.com">MatanAzulay123@Gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <div class="copyrightText">
+        <p>2024 Dog Trip Inc. All rights reserved</p>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                item.classList.toggle('active');
+
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+            });
+        });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Credit Card Payment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6c63ff;
+            --secondary-color: #4CAF50;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --error-color: #ff4757;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-image: url('{{ url_for('static', filename='images/payment3.jpeg') }}');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center 56%;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card-form {
+            margin-bottom: 90px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            transition: all 0.3s ease;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 14px;
+            border: none;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #5a52d5;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        i.fa-brands { margin: 5px 5px; }
+    </style>
+</head>
+<body>
+
+<div class="card-form">
+    <h2>Credit Card Payment <br> <i class="fa-brands fa-cc-visa"></i><i class="fa-brands fa-cc-mastercard"></i></h2>
+    <form id="paymentForm">
+        <input type="hidden" id="bookingId" value="{{ booking_id }}">
+        <input type="hidden" id="walkerId" value="{{ walker_id }}">
+        <input type="hidden" id="selectedDate" value="{{ booking_date }}">
+        <div class="form-group">
+            <label for="cardNumber">Card Number</label>
+            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+            <div id="cardNumberError" class="error-message"></div>
+        </div>
+        <div class="form-group">
+            <label for="expiryDate">Expiry Date</label>
+            <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5">
+            <div id="expiryDateError" class="error-message"></div>
+        </div>
+        <div class="form-group">
+            <label for="cvc">CVC</label>
+            <input type="text" id="cvc" placeholder="123" maxlength="3">
+            <div id="cvcError" class="error-message"></div>
+        </div>
+        <button type="submit" class="btn" id="submitButton">Pay Now</button>
+        <div id="formError" class="error-message"></div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // אתחול
+    new Cleave('#cardNumber', {
+        creditCard: true,
+        delimiter: ' '
+    });
+
+    new Cleave('#expiryDate', {
+        date: true,
+        datePattern: ['m', 'y'],
+        delimiter: '/'
+    });
+
+    new Cleave('#cvc', {
+        numeral: true,
+        numeralPositiveOnly: true,
+        blocks: [3]
+    });
+
+    document.getElementById('paymentForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Collect data from the form
+         const cardNumber = document.getElementById('cardNumber').value.replace(/\s+/g, '');
+        const expiryDate = document.getElementById('expiryDate').value;
+        const cvc        = document.getElementById('cvc').value;
+        const walkerId   = document.getElementById('walkerId').value;
+        const selectedDate = document.getElementById('selectedDate').value;
+
+        let hasError = false;
+
+        // Clear previous error messages
+        document.getElementById('cardNumberError').textContent = '';
+        document.getElementById('expiryDateError').textContent = '';
+        document.getElementById('cvcError').textContent = '';
+        document.getElementById('formError').textContent = '';
+
+        // Disable the submit button during submission
+        const submitButton = document.getElementById('submitButton');
+        submitButton.disabled = true;
+
+        // Validate card number
+        if (!/^\d{16}$/.test(cardNumber)) {
+            document.getElementById('cardNumberError').textContent = 'Please enter a valid 16-digit card number';
+            hasError = true;
+        }
+
+        // Validate expiry date
+        if (!expiryDate || !expiryDate.includes('/')) {
+            document.getElementById('expiryDateError').textContent = 'Please enter an expiry date';
+            hasError = true;
+        } else {
+            const [month, year] = expiryDate.split('/');
+            const currentDate = new Date();
+            const expiryDateObj = new Date(`20${year}-${month}-01`);
+
+            if (!month || !year ||
+                !/^\d{2}$/.test(month) ||
+                !/^\d{2}$/.test(year) ||
+                parseInt(month) < 1 ||
+                parseInt(month) > 12 ||
+                expiryDateObj <= currentDate) {
+                document.getElementById('expiryDateError').textContent = 'Please enter a valid expiry date ';
+                hasError = true;
+            }
+        }
+
+        // Validate CVC
+        if (!/^\d{3}$/.test(cvc)) {
+            document.getElementById('cvcError').textContent = 'Please enter a valid 3-digit CVC';
+            hasError = true;
+        }
+
+        if (!hasError) {
+            // Send data to the server
+            fetch('/process_payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cardNumber: cardNumber,
+                    expiryDate: expiryDate,
+                    cvc: cvc,
+                    walkerId: walkerId,
+                    date: selectedDate,
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                     window.location.href = `/rating/${walkerId}?date=${selectedDate}&booking_id=${data.booking_id}`;
+                } else {
+                    document.getElementById('formError').textContent = data.message;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('formError').textContent = 'An unexpected error occurred. Please try again.';
+            })
+            .finally(() => {
+                // Re-enable the submit button after the request is complete
+                submitButton.disabled = false;
+            });
+        } else {
+             // Re-enable the submit button if there were errors
+            submitButton.disabled = false;
+        }
+    });
+});
+</script>
+
+</body>
+</html>

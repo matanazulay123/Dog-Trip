@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Register</title>
+    <style>
+         body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-image: url('/static/images/register4.jpeg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center 49%;
+
+        }
+
+        .container {
+            background-color: #363941;
+            border-radius: 12px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 350px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            margin-top: 7px;
+        }
+
+        label {
+            display: none;
+        }
+
+        input {
+            background-color: #1d1e21;
+            border: none;
+            border-radius: 25px;
+            color: #fff;
+            padding: 10px 23px;
+            width: 70%;
+            margin-bottom: 15px;
+            outline: none;
+            font-size: 1em;
+            background: rgba(0, 0, 0, 0.1);
+            border: 2px solid #fff;
+        }
+
+        .user-type-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+        }
+
+        .user-type-option {
+            display: inline-block;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #fff;
+            color: #000;
+            width: 35%;
+            font-size: 0.9em;
+        }
+
+        .user-type-option input[type="radio"] {
+            display: none;
+        }
+
+        .user-type-option.active {
+            border: 4px solid #20B2AA;
+        }
+
+        input[type="submit"] {
+            background-color: #3498db;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            padding: 10px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            width: auto;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Register</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="feedback-container">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/register">
+            <div class="user-type-container">
+                <div class="user-type-option" data-value="dog_owner">
+                    <input type="radio" id="type-dog_owner" name="user_type" value="dog_owner" required>
+                    Dog Owner
+                </div>
+                <div class="user-type-option" data-value="dog_walker">
+                    <input type="radio" id="type-dog_walker" name="user_type" value="dog_walker">
+                    Dog Walker
+                </div>
+            </div>
+
+            <input type="text" id="first_name" name="first_name" placeholder="First Name" required>
+            <input type="text" id="last_name" name="last_name" placeholder="Last Name" required>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="text" id="phone" name="phone" placeholder="Phone" required>
+            <input type="submit" value="Register">
+        </form>
+    </div>
+
+    <script>
+        // הוספת מאזינים ועיצוב לאירוע לפי סוג משתמש
+
+        const userTypeOptions = document.querySelectorAll('.user-type-option');
+
+        userTypeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                userTypeOptions.forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+                option.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+    </script>
+</body>
+</html>

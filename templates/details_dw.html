@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .main a:hover { color: red; }
+        body {
+            background-image: url(/static/images/dog123.jpeg);
+            background-position: center 88%;
+        }
+        .container5 {
+            max-width: 800px;
+            margin: 0 auto;
+            margin-top: 70px;
+            border-radius: 5px;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-top: 5rem;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 8px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        h2 {
+            background: linear-gradient(to right, #2F4F4F, #b0e0e6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+        select, input[type="number"], input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 7px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .btn:hover { background-color: #2980b9; }
+        .user-type-option {
+            display: inline-block;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #fff;
+            color: #000;
+            width: 49%;
+            font-size: 0.9em;
+        }
+        .user-type-option input[type="checkbox"] { display: none; }
+        .user-type-option.active { border: 4px solid #20B2AA; }
+        .disabled {
+            background-color: #f0f0f0;
+            pointer-events: none;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="{{ url_for('dashboard_dw') }}" class="logo"><span><img src="{{ url_for('static', filename='images/logo.png') }}"></span></a>
+    <ul class="navbar">
+        <li><a href="{{ url_for('dashboard_dw') }}">Profile</a></li>
+        <li><a href="{{ url_for('details_dw') }}">Services</a></li>
+        <li><a href="{{ url_for('location_dw') }}">Location</a></li>
+        <li><a href="{{ url_for('notifications') }}">notifications</a></li>
+    </ul>
+    <div class="main">
+        <a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Log out</a>
+    </div>
+</header>
+
+ {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="feedback-container">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="container5">
+        <h1>Edit Details</h1>
+        <form id="dogWalkerForm" method="POST">
+            <div class="profile-section">
+                <h2>Personal Information</h2>
+                <label for="has_pet">Do you have a pet?</label>
+                <select id="has_pet" name="has_pet" required>
+                    <option value="Yes" > Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <div class="profile-section">
+                <h2>Choose the service you offer</h2>
+                <div class="user-type-container">
+                    <div class="user-type-option {% if details.is_dog_walker %}active{% endif %}" data-value="dog_walker">
+                        <input type="checkbox" id="type-dog_walker" name="service_type[]" value="dog_walker"
+                               {% if details.is_dog_walker %}checked{% endif %}>
+                        <label for="type-dog_walker">Dog Walker</label>
+                    </div>
+                    <div class="user-type-option {% if details.is_dog_sitter %}active{% endif %}" data-value="dog_sitter">
+                        <input type="checkbox" id="type-dog_sitter" name="service_type[]" value="dog_sitter"
+                               {% if details.is_dog_sitter %}checked{% endif %}>
+                        <label for="type-dog_sitter">Dog Sitter</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h2>Pricing</h2>
+                <label for="walking_price">Price for Dog Walking</label>
+                <input type="number" id="walking_price" name="walking_price" min="0"
+                       value="{{ details.walking_price or '' }}"
+                       {% if not details.is_dog_walker %}disabled class="disabled"{% endif %}>
+
+                <label for="sitting_price">Price for Dog Sitting</label>
+                <input type="number" id="sitting_price" name="sitting_price" min="0"
+                       value="{{ details.sitting_price or '' }}"
+                       {% if not details.is_dog_sitter %}disabled class="disabled"{% endif %}>
+            </div>
+
+            <div class="save-button-container">
+                <button type="submit" class="btn">Save Changes</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+const userTypeOptions = document.querySelectorAll('.user-type-option');
+
+// פונקציה למניעת אירועים לא רצויים והגדרה מחדש של הסימונים והמחירים
+userTypeOptions.forEach(option => {
+    option.addEventListener('click', (e) => {
+        e.preventDefault();  // מניעת כל התנהגות ברירת מחדל
+
+        // שינוי מצב ה-checkbox על הכפתור שנלחץ
+        const checkbox = option.querySelector('input[type="checkbox"]');
+        checkbox.checked = !checkbox.checked;
+
+        // עדכון המחלקה 'active' בהתאם למצב ה-checkbox
+        option.classList.toggle('active', checkbox.checked);
+
+        // טיפול בהגדרת המצב של הכפתור השני, בהתאם לכפתור הראשון
+        updateServiceInputs();
+    });
+});
+
+// פונקציה שתעדכן את שדות המחיר בהתאם לשירות שנבחר
+function updateServiceInputs() {
+    const dogWalkerOption = document.querySelector('[data-value="dog_walker"]');
+    const dogSitterOption = document.querySelector('[data-value="dog_sitter"]');
+    const walkingPriceInput = document.getElementById('walking_price');
+    const sittingPriceInput = document.getElementById('sitting_price');
+
+    // בדיקה אם השירות של Dog Walker נבחר, ונעילת שדה המחיר של Dog Sitter אם לא
+    if (dogWalkerOption.classList.contains('active')) {
+        walkingPriceInput.disabled = false;
+    } else {
+        walkingPriceInput.disabled = true;
+        walkingPriceInput.value = '';  // מחיקת השדה אם לא נבחר שירות זה
+    }
+
+    // בדיקה אם השירות של Dog Sitter נבחר, ונעילת שדה המחיר של Dog Walker אם לא
+    if (dogSitterOption.classList.contains('active')) {
+        sittingPriceInput.disabled = false;
+    } else {
+        sittingPriceInput.disabled = true;
+        sittingPriceInput.value = '';  // מחיקת השדה אם לא נבחר שירות זה
+    }
+}
+// בעת טעינת הדף נוודא שהשדות המעודכנים נכונים בהתאם למצב הקיים
+window.onload = function() {
+    updateServiceInputs();
+};
+
+    </script>
+</body>
+</html>

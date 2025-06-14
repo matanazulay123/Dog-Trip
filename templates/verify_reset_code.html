@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Code</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+
+        body {
+            background-image: url('/static/images/blackandwhite.jpeg');
+        }
+
+        .container0 {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        .flash-message {
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            text-align: center;
+            background-color: grey;
+        }
+
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="text"] {
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #3498db;;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('home') }}" class="logo">
+            <span><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></span>
+        </a>
+        <ul class="navbar">
+            <li><a href="{{ url_for('home') }}" class="active">Home</a></li>
+            <li><a href="{{ url_for('services') }}">Services</a></li>
+            <li><a href="{{ url_for('aboutus') }}">About Us</a></li>
+            <li><a href="{{ url_for('register') }}">Become a Dog Walker</a></li>
+        </ul>
+        <div class="main">
+            <a href="{{ url_for('login') }}" class="user"><i class="fa-solid fa-user"></i> Log In</a>
+            <a href="{{ url_for('register') }}">Sign up</a>
+        </div>
+    </header>
+
+    <div class="container0">
+        <h2>Enter the Verification Code</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form id="verificationForm" action="{{ url_for('verify_reset_code') }}" method="post">
+            <input type="text" id="verificationCode" name="verification_code" placeholder="4-digit verification code" required pattern="\d{4}" maxlength="4">
+            <button type="submit">Verify Code</button>
+        </form>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="sec logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+                <ul class="sci">
+                    <li><a href="https://www.facebook.com/"><i class="fa-brands fa-facebook-f"></i></a></li>
+                    <li><a href="https://www.instagram.com/"><i class="fa-brands fa-instagram"></i></a></li>
+                    <li><a href="https://www.youtube.com/"><i class="fa-brands fa-youtube"></i></a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>Services</h2>
+                <ul>
+                    <li><a href="{{ url_for('services') }}">Dog Walking</a></li>
+                    <li><a href="{{ url_for('services') }}">Dog Sitting</a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>About</h2>
+                <ul>
+                    <li><a href="{{ url_for('aboutus') }}">About Us</a></li>
+                    <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>Apply</h2>
+                <ul>
+                    <li><a href="{{ url_for('register') }}">Become a Dog Walker</a></li>
+                </ul>
+            </div>
+            <div class="sec contact">
+                <h2>Contact Us</h2>
+                <ul class="info">
+                    <li><span><i class="fa-solid fa-phone"></i></span><a href="tel:0503737146">050-3737146</a></li>
+                    <li><span><i class="fa-solid fa-envelope"></i></span><a href="mailto:MatanAzulay123@Gmail.com">MatanAzulay123@Gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+
+</body>
+</html>

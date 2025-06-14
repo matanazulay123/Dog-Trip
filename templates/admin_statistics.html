@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Statistics</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .chart-container {
+            width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .total-stats {
+            text-align: center;
+            margin: 20px;
+            font-size: 18px;
+        }
+        .stat-box {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .top-section, .bottom-section {
+            padding: 20px 0;
+        }
+        .section-header {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #444;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #888, transparent);
+            z-index: -1;
+        }
+        .section-header span {
+            background: #f4f4f9;
+            padding: 0 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="total-stats">
+        <div class="stat-box">Total Users: <span id="totalUsers">0</span></div>
+        <div class="stat-box">Total Dogs: <span id="totalDogs">0</span></div>
+    </div>
+
+    <div class="top-section">
+        <div class="section-header"><span>User Statistics</span></div>
+        <div class="stats-grid">
+            <div class="chart-container">
+                <canvas id="userTypesChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="userStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-section">
+        <div class="section-header"><span>Dog Statistics</span></div>
+        <div class="stats-grid">
+            <div class="chart-container">
+                <canvas id="dogSizesChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="topBreedsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+   <div class="section-header"><span>Region</span></div>
+        <div class="chart-container">
+        <canvas id="regionStatsChart"></canvas>
+   </div>
+
+    <script>
+        const colors = [
+            '#0088FE',
+            '#00C49F',
+            '#FFBB28',
+            '#FF8042',
+            '#8884D8'
+        ];
+
+        // יצירת אובייקט לאחסון מופעים של התרשימים
+        let charts = {};
+
+        function createChart(canvasId, data, chartTitle) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            if (charts[canvasId]) {
+                charts[canvasId].destroy();
+            }
+            charts[canvasId] = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: data.map(item => item.name),
+                    datasets: [{
+                        data: data.map(item => item.value),
+                        backgroundColor: colors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: chartTitle,
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${context.label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadStatistics() {
+            try {
+                const response = await fetch('/api/admin/statistics');
+                const data = await response.json();
+
+                // Update total counters
+                document.getElementById('totalUsers').textContent = data.total_users;
+                document.getElementById('totalDogs').textContent = data.total_dogs;
+
+                // Create all charts
+                createChart('userTypesChart', data.user_types, 'User Types Distribution');
+                createChart('userStatusChart', data.user_status, 'User Status');
+                createChart('dogSizesChart', data.dog_sizes, 'Dog Sizes Distribution');
+                createChart('topBreedsChart', data.top_breeds, 'Top Dog Breeds');
+                createChart('regionStatsChart', data.region_stats.map(stat => ({
+                name: `${stat.region} (${stat.average_rating}★)`,
+                value: stat.walkers_count
+                })), 'Region Distribution of Walkers');
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        loadStatistics();  // Load all data and render charts
+    </script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Trip</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .btn {
+            background-color: #ff5733;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background-color: #c13d26;
+        }
+
+        .btn a {
+            text-decoration: underline; /* Add underline to caption */
+            color: inherit; /* Match text color to button */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('home') }}" class="logo"><span><img src="{{ url_for('static', filename='images/logo.png') }}"></span></a>
+        <ul class="navbar">
+            <li><a href="{{ url_for('home') }}" class="active">Home</a></li>
+            <li><a href="{{ url_for('services') }}">Services</a></li>
+            <li><a href="{{ url_for('aboutus') }}">About Us</a></li>
+            <li><a href="{{ url_for('register') }}">Become a Dog Walker</a></li>
+        </ul>
+        <div class="main">
+            <a href="{{ url_for('login') }}" class="user"><i class="fa-solid fa-user"></i>Log In</a>
+            <a href="{{ url_for('register') }}">Sign up</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>The best walkers for your best friends!</h1>
+                <p>Click Here To Find Dog Walkers Near You!</p>
+                <button class="btn"><a href="{{ url_for('register') }}">Click</a></button>
+            </div>
+        </div>
+    </section>
+
+     <div class="our-services">
+    <div class="service-card">
+        <div class="service-icon">
+            <i class="fa-solid fa-shield-dog"></i>
+        </div>
+        <h2 class="service-title">Dog Sitting</h2>
+        <p class="service-description">Our dog sitting service offers a safe and comfortable environment for your furry friend while you're away. With experienced caregivers, your dog will enjoy personalized attention and care, ensuring a stress-free experience.</p>
+        <h4 class="service-price">Starting from 99 <i class="fa-solid fa-shekel-sign"></i></h4>
+    </div>
+
+    <div class="service-card">
+        <div class="service-icon">
+            <i class="fa-solid fa-person-walking-with-cane"></i>
+        </div>
+        <h2 class="service-title">Dog Walking</h2>
+        <p class="service-description">Our dog walking service provides essential exercise and stimulation for your dog. Whether it's a leisurely stroll or an energetic walk, our professional walkers ensure your dog stays active and happy during their outdoor adventures.</p>
+        <h4 class="service-price">Starting from 80 <i class="fa-solid fa-shekel-sign"></i></h4>
+    </div>
+</div>
+
+
+
+
+
+    <section class="users">
+    <div class="testimonial-card">
+
+        <div class="testimonial-image">
+            <img src="/static/images/women_profile.jpeg" alt="Customer 1">
+        </div>
+        <div class="testimonial-text"><i class="fa-solid fa-quote-left"></i>
+            Dog sitting service was fantastic! My dog was happy and well-cared for. <i class="fa-solid fa-quote-right"></i>
+        </div>
+        <p><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></p>
+        <div class="testimonial-author">- Jessica Goren</div>
+    </div>
+
+     <div class="testimonial-card">
+
+        <div class="testimonial-image">
+            <img src="/static/images/men_profile.jpeg" alt="Customer 2">
+        </div>
+        <div class="testimonial-text"><i class="fa-solid fa-quote-left"></i>
+            Dog Trip made finding a reliable dog walker easy and seamless. highly recommend! <i class="fa-solid fa-quote-right"></i>
+        </div>
+        <p><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></p>
+        <div class="testimonial-author">- Eyal Hanun</div>
+     </div>
+    </section>
+
+ <footer>
+        <div class="container">
+            <div class="sec logo">
+                <img src="/static/images/logo.png">
+                <ul class="sci">
+                    <li><a href="https://www.facebook.com/"><i class="fa-brands fa-facebook-f"></i></a></li>
+                    <li><a href="https://www.instagram.com/"><i class="fa-brands fa-instagram"></i></a></li>
+                    <li><a href="https://www.youtube.com/"><i class="fa-brands fa-youtube"></i></a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>Services</h2>
+                <ul>
+                    <li><a href="{{ url_for('services') }}">Dog walking</a></li>
+                    <li><a href="{{ url_for('services') }}">Dog Sitting</a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>About</h2>
+                <ul>
+                    <li><a href="{{ url_for('aboutus') }}">About Us</a></li>
+                    <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>Apply</h2>
+                <ul>
+                    <li><a href="{{ url_for('register') }}">Become a Dog Walker</a></li>
+                </ul>
+            </div>
+            <div class="sec contact">
+                <h2>Contact Us</h2>
+                <ul class="info">
+                    <li><span><i class="fa-solid fa-phone"></i></span><a href="tel:0503737146">050-3737146</a></li>
+                    <li><span><i class="fa-solid fa-envelope"></i></span><a href="mailto:MatanAzulay123@Gmail.com">MatanAzulay123@Gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <div class="copyrightText">
+        <p>2024 Dog Trip Inc. All rights reserved</p>
+    </div>
+
+</body>
+</html>

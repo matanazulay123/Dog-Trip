@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Trip - About Us</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background-image: url(/static/images/dogtrip123.png);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            padding: 43px;
+        }
+    </style>
+</head>
+<body>
+     <header>
+        <a href="{{ url_for('home') }}" class="logo"><span><img src="{{ url_for('static', filename='images/logo.png') }}"></span></a>
+        <ul class="navbar">
+            <li><a href="{{ url_for('home') }}" class="active">Home</a></li>
+            <li><a href="{{ url_for('services') }}">Services</a></li>
+            <li><a href="{{ url_for('aboutus') }}">About Us</a></li>
+            <li><a href="{{ url_for('register') }}">Become a Dog Walker</a></li>
+        </ul>
+        <div class="main">
+            <a href="{{ url_for('login') }}" class="user"><i class="fa-solid fa-user"></i>Log In</a>
+            <a href="{{ url_for('register') }}">Sign up</a>
+        </div>
+    </header>
+
+    <section class="about-us">
+        <div class="container">
+
+            <div class="part1">
+                <h2>About Us</h2>
+                <p>Dog Trip is a platform dedicated to connecting dog lovers with responsible and experienced dog walkers and sitters.
+                    We believe that every dog deserves the best care and attention, and we strive to provide a safe and reliable service for both dog owners and walkers.</p>
+            </div>
+
+            <div class="mission-statement">
+                <h3>Our Mission</h3>
+                <p>To make dog care convenient and accessible for everyone, ensuring that all dogs receive the love, attention,
+                    and exercise they need, while providing a rewarding opportunity for dog walkers and sitters.</p>
+            </div>
+
+            <div class="team-member">
+                <i class="fa-solid fa-user-tie"></i>
+                <h3>Matan David Azulay</h3>
+                <p>Founder & CEO</p>
+            </div>
+        </div>
+    </section>
+
+<footer>
+        <div class="container">
+            <div class="sec logo">
+                <img src="/static/images/logo.png">
+                <ul class="sci">
+                    <li><a href="https://www.facebook.com/"><i class="fa-brands fa-facebook-f"></i></a></li>
+                    <li><a href="https://www.instagram.com/"><i class="fa-brands fa-instagram"></i></a></li>
+                    <li><a href="https://www.youtube.com/"><i class="fa-brands fa-youtube"></i></a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>Services</h2>
+                <ul>
+                    <li><a href="{{ url_for('services') }}">Dog walking</a></li>
+                    <li><a href="{{ url_for('services') }}">Dog Sitting</a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>About</h2>
+                <ul>
+                    <li><a href="{{ url_for('aboutus') }}">About Us</a></li>
+                    <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="sec links">
+                <h2>Apply</h2>
+                <ul>
+                    <li><a href="{{ url_for('register') }}">Become a Dog Walker</a></li>
+                </ul>
+            </div>
+            <div class="sec contact">
+                <h2>Contact Us</h2>
+                <ul class="info">
+                    <li><span><i class="fa-solid fa-phone"></i></span><a href="tel:0503737146">050-3737146</a></li>
+                    <li><span><i class="fa-solid fa-envelope"></i></span><a href="mailto:MatanAzulay123@Gmail.com">MatanAzulay123@Gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <div class="copyrightText">
+        <p>2024 Dog Trip Inc. All rights reserved</p>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Dog Trip</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #555;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .admin-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 40px 0;
+        }
+        .admin-menu-item {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .admin-menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .admin-menu-item a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #333;
+            height: 200px;
+            padding: 20px;
+        }
+        .admin-menu-item i {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: #4a90e2;
+        }
+        .admin-menu-item span {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Admin Dashboard - Dog Trip</h1>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="admin-menu">
+            <div class="admin-menu-item">
+                <a href="/admin/statistics">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Site Statistics</span>
+                </a>
+            </div>
+            <div class="admin-menu-item">
+                <a href="/admin/users">
+                    <i class="fas fa-users"></i>
+                    <span>User Management</span>
+                </a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

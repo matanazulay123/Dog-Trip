@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .main a:hover { color: red; }
+
+         body {
+            background-image: url(/static/images/search2.jpeg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 4rem;
+            margin-bottom: 3.5rem;
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 6px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            background: linear-gradient(to right, #2F4F4F, #b0e0e6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        input[type="file"] { display: none; }
+        input[type="tel"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .btn:hover { background-color: #2980b9; }
+
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+    </style>
+</head>
+<body data-page="dashboard_do">
+<header>
+    <a href="{{ url_for('dashboard_do') }}" class="logo"><span><img src="{{ url_for('static', filename='images/logo.png') }}"></span></a>
+    <ul class="navbar">
+        <li><a href="{{ url_for('searching_do') }}" class="active">Search</a></li>
+        <li><a href="{{ url_for('dashboard_do') }}">Profile</a></li>
+        <li><a href="{{ url_for('dog_profile') }}">Your dog</a></li>
+        <li><a href="{{ url_for('location_do') }}">Location</a></li>
+        <li><a href="{{ url_for('notifications') }}">notifications</a></li>
+    </ul>
+    <div class="main">
+        <a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Log out</a>
+    </div>
+</header>
+
+<div class="container5">
+    <h1>Edit Profile</h1>
+
+    <form id="profileForm" action="{{ url_for('update_profile') }}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="user_id" value="{{ user_id }}">
+
+        <div class="profile-section">
+            <h2>User Image</h2>
+            <div class="profile-pic-container">
+                <img src="{{ profile_picture_url }}" alt="Profile Picture" class="profile-image">
+                <div class="profile-pic-overlay">
+                    <i class="fas fa-camera"></i>
+                </div>
+            </div>
+            <input type="file" name="profile_pic" id="profile_pic" accept="image/*" style="display: none;">
+            <div class="btn-container">
+                <button type="button" class="btn" onclick="document.getElementById('profile_pic').click()">Choose Profile Picture</button>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <h2>Bio</h2>
+            <textarea name="bio" id="bio" placeholder="Tell us more about yourself..." rows="6">{{ user[bio] }}</textarea>
+        </div>
+
+
+        <div class="profile-section">
+            <h2>Phone Details</h2>
+            <input type="tel" name="phone_number" id="phone_number" placeholder="New Phone Number">
+        </div>
+
+        <div class="profile-section">
+            <h2>Security Password</h2>
+            <input type="password" name="new_password" id="new_password" placeholder="New Password">
+            <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm New Password">
+        </div>f
+
+        <div class="save-button-container">
+            <button type="submit" class="btn">Save Profile Changes</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
