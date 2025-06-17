@@ -6,7 +6,8 @@ This was my final fullstack project, built from scratch while self-learning Flas
 Dog Trip is a web platform that connects dog owners with reliable and professional dog walkers.
 It includes user authentication, availability calendars, a review and rating system, an admin dashboard, and a smart dynamic matching algorithm.
 
-[▶️ Watch the full video demo]([https://drive.google.com/file/d/XXXXXXX/view?usp=sharing](https://drive.google.com/file/d/1abMJrJrOJhE0-EXAHufk1ovCNSQ7N-4E/view?usp=sharing))
+[▶️ Watch the full video demo](https://drive.google.com/file/d/1abMJrJrOJhE0-EXAHufk1ovCNSQ7N-4E/view?usp=sharing)
+
 
 📌 Features
 
