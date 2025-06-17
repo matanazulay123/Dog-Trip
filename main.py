@@ -2,6 +2,8 @@ import math
 import random
 import re #for the password valid
 import MySQLdb
+import os
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_mail import Mail, Message
 from flask_mysqldb import MySQL
@@ -10,20 +12,20 @@ app = Flask(__name__, template_folder='templates')
 app.secret_key = 'my secret key'
 
 # MySQL database configuration
-app.config['MYSQL_HOST'] = 'metro.proxy.rlwy.net'
-app.config['MYSQL_PORT'] = 12644
+app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'ittkkpKNZZrHzwoXrmfuobEQLbIUxSjw'  # בדיוק כמו שבראווה Raw Command
-app.config['MYSQL_DB'] = 'railway'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'dogtrip_db'
 
 
+load_dotenv()
 # Mail server configuration
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465 #standard
-app.config['MAIL_USE_TLS'] = False #Disables the security protocol
-app.config['MAIL_USE_SSL'] = True #security protocol
-app.config['MAIL_USERNAME'] = 'matanazulay123@gmail.com'
-app.config['MAIL_PASSWORD'] = 'qxonvrvfzhaxjicz'
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 
 mysql = MySQL(app) #connection
 mail = Mail(app)
